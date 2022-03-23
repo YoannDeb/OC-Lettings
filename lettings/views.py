@@ -1,4 +1,5 @@
 from django.shortcuts import render
+from django.template.loader import get_template
 
 from .models import Letting
 
@@ -9,7 +10,7 @@ from .models import Letting
 def index(request):
     lettings_list = Letting.objects.all()
     context = {'lettings_list': lettings_list}
-    return render(request, 'index.html', context)
+    return render(request, 'lettings/index.html', context)
 
 
 # Cras ultricies dignissim purus, vitae hendrerit ex varius non. In accumsan
@@ -29,4 +30,4 @@ def letting(request, letting_id):
         'title': letting.title,
         'address': letting.address,
     }
-    return render(request, 'letting.html', context)
+    return render(request, 'lettings/letting.html', context)
