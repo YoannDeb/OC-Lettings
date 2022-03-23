@@ -1,7 +1,7 @@
 from django.shortcuts import render
 
 from .models import Profile
-from django.template.loader import get_template
+
 
 # Sed placerat quam in pulvinar commodo. Nullam laoreet consectetur ex, sed
 # consequat libero pulvinar eget. Fusc faucibus, urna quis auctor pharetra,
@@ -21,4 +21,3 @@ def profile(request, username):
     profile = Profile.objects.get(user__username=username)
     context = {'profile': profile}
     return render(request, 'profiles/profile.html', context)
-
