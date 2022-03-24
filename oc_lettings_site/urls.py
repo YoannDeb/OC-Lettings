@@ -1,7 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from . import views
 from lettings import urls as lettings_urls
 from profiles import urls as profiles_urls
 from homepage import urls as homepage_urls
