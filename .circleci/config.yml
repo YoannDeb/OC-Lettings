@@ -6,12 +6,24 @@ orbs:
   win: circleci/windows@2.2.0
 
 workflows:
-  test:
+  main_branch:
     jobs:
-      - tests
+      - tests:
+          filters:
+            branches:
+              only:
+                - main
       - build-docker-image:
           requires:
             - tests
+
+  other_branches:
+    jobs:
+      - tests:
+          filters:
+            branches:
+              ignore:
+                - main
 
 jobs:
   tests:
