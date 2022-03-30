@@ -24,9 +24,9 @@ jobs:
       - run:
           name: Run pytest
           command: pytest
-      -run:
-        name: linting
-        command: flake8
+      - run:
+          name: linting
+          command: flake8
 
   build-docker-image:
     executor: win/default
