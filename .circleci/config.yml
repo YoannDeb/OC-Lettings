@@ -16,7 +16,7 @@ workflows:
       - build-and-push-docker-image:
           requires:
             - tests
-      - heroku deploy:
+      - heroku-deploy:
           requires:
             - build-and-push-docker-image
 
