@@ -1,11 +1,6 @@
 # set base image (host OS)
 FROM python:3.10-alpine
 
-## install dependencies
-#RUN apk update && \
-#    apk add --virtual build-deps gcc musl-dev && \
-#    apk add postgresql-dev
-
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
@@ -16,10 +11,10 @@ ENV DEBUG 0
 WORKDIR /app
 
 # install psycopg2
-RUN apk update \
-    && apk add --virtual build-essential gcc python3-dev musl-dev \
-    && apk add postgresql-dev \
-    && pip install psycopg2
+#RUN apk update \
+#    && apk add --virtual build-essential gcc python3-dev musl-dev \
+#    && apk add postgresql-dev \
+#    && pip install psycopg2
 
 # copy the dependencies file to the working directory
 COPY ./requirements.txt .
@@ -31,4 +26,4 @@ EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # run gunicorn
-CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
+#CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
