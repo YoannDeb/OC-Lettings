@@ -69,8 +69,8 @@ jobs:
 #      - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
 #      - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
       - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
-      - run: heroku maintenance:off --app $HEROKU_APP_NAME
-      - run: heroku run python manage.py migrate
+      - run: heroku maintenance:off -a $HEROKU_APP_NAME
+      - run: heroku run python manage.py migrate -a $HEROKU_APP_NAME #todo require
 #      - run: heroku python manage.py initapp (migrate and collectstatic, create superuser with orm, populate db...)
       - heroku/deploy-via-git
 #          force: true
