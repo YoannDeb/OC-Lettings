@@ -8,11 +8,11 @@ orbs:
 workflows:
   test:
     jobs:
-      - test
-#      - build-and-push-docker
+      - tests
+      - build-docker-image
 
 jobs:
-  test:
+  tests:
 #    docker:
 #      - image: cimg/python:3.10
 #      - image: cimg/base:current
