@@ -16,6 +16,9 @@ workflows:
       - build-docker-image:
           requires:
             - tests
+      - push-docker-image:
+          requires:
+            - build-docker-image
 
   other_branches:
     jobs:
@@ -54,7 +57,9 @@ jobs:
 #          command: docker build -t $DOCKER_USER/oc-lettings-site:$CIRCLE_SHA1 .
           command: docker build -t web:latest .
   push-docker-image:
-    executor: win/default
+#    executor: win/default
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
       - checkout
       - run:
