@@ -1,7 +1,62 @@
 version: 2.1
+
 orbs:
-  heroku: circleci/heroku@0.0.10
+  python: circleci/python@2.0.3
+  heroku: circleci/heroku@1.2.6
+  win: circleci/windows@2.2.0
+
 workflows:
-  heroku_deploy:
+  test:
     jobs:
-      - heroku/deploy-via-git
+      - test
+#      - build-and-push-docker
+
+jobs:
+  test:
+#    docker:
+#      - image: cimg/python:3.10
+#      - image: cimg/base:current
+    executor: python/default
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip
+      - run:
+          name: Run pytest
+          command: pytest
+      -run:
+        name: linting
+        command: flake8
+
+  build-docker-image:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Build Docker image
+          command: docker build -t $DOCKER_USER/oc-lettings:$CIRCLE_SHA1 .
+  push-docker-image:
+    executor: win/default
+    steps:
+      - checkout
+      - run:
+          name: Push Docker Image
+          command: |
+            echo $DOCKER_TOKEN | docker login -u $DOCKER_USER --password-stdin
+            docker tag $DOCKER_USER/oc-lettings:$CIRCLE_SHA1 $DOCKER_USER/oc-lettings:lastest
+            docker push $DOCKER_USER/oc-lettings:$CIRCLE_SHA1
+            docker push $DOCKER_USER/oc-lettings:lastest
+
+  deploy:
+    executor: heroku/default
+    steps:
+      - checkout
+      - heroku/install
+      - run: heroku maintenance:on --app $HEROKU_APP_NAME
+      - run: heroku config:set BUILD_NUMBER=$CIRCLE_BUILD_NUM -a $HEROKU_APP_NAME
+      - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
+      - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
+      - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
+      - run: heroku maintenance:off --app $HEROKU_APP_NAME
+      - heroku/deploy-via-git:
+          force: true
