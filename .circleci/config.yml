@@ -36,8 +36,8 @@ jobs:
       - python/install-packages:
           pkg-manager: pip
       - run:
-          name: Run pytest
-          command: pytest
+          name: Run Django tests
+          command: python manage.py test
       - run:
           name: linting
           command: flake8
