@@ -7,7 +7,9 @@ from .models import Profile
 class LettingsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.user = User.objects.create(username="test_username", password="abc1234", email="test@test.com", first_name="test", last_name='test')
+        cls.user = User.objects.create(
+            username="test_username", password="abc1234", email="test@test.com",
+            first_name="test", last_name='test')
         cls.profile = Profile.objects.create(user=cls.user, favorite_city="Madrid")
 
     def test_lettings_index_should_respond_status_200_ok(self):

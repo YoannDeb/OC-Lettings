@@ -6,7 +6,10 @@ from .models import Letting, Address
 class LettingsTestCase(TestCase):
     @classmethod
     def setUpTestData(cls):
-        cls.address = Address.objects.create(number=1, street="rue de Paris", city="TestCity", state="", zip_code="75012", country_iso_code="FRA")
+        cls.address = Address.objects.create(
+            number=1, street="rue de Paris", city="TestCity", state="",
+            zip_code="75012", country_iso_code="FRA"
+        )
         cls.letting = Letting.objects.create(title="Test", address=cls.address)
 
     def test_lettings_index_should_respond_status_200_ok(self):
