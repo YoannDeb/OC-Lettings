@@ -43,7 +43,10 @@ jobs:
           command: flake8
 
   build-docker-image:
-    executor: win/default
+#    executor: win/default
+    machine:
+      image: ubuntu-2004:202010-01
+
     steps:
       - checkout
       - run:
