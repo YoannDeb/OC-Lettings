@@ -16,9 +16,9 @@ workflows:
       - build-and-push-docker-image:
           requires:
             - tests
-#      - push-docker-image:
-#          requires:
-#            - build-docker-image
+      - heroku deploy:
+          requires:
+            - build-and-push-docker-image
 
   other_branches:
     jobs:
@@ -30,9 +30,6 @@ workflows:
 
 jobs:
   tests:
-#    docker:
-#      - image: cimg/python:3.10
-#      - image: cimg/base:current
     executor: python/default
     steps:
       - checkout
@@ -46,7 +43,6 @@ jobs:
           command: flake8
 
   build-and-push-docker-image:
-#    executor: win/default
     machine:
       image: ubuntu-2004:202010-01
 
@@ -55,7 +51,6 @@ jobs:
       - run:
           name: Build Docker image
           command: docker build -t $DOCKER_USER/oc-lettings-site:$CIRCLE_SHA1 .
-#          command: docker build -t web:latest .
       - run:
           name: Push Docker Image
           command: |
@@ -64,16 +59,16 @@ jobs:
             docker push $DOCKER_USER/oc-lettings-site:$CIRCLE_SHA1
             docker push $DOCKER_USER/oc-lettings-site:latest
 
-  deploy:
+  heroku-deploy:
     executor: heroku/default
     steps:
       - checkout
       - heroku/install
       - run: heroku maintenance:on --app $HEROKU_APP_NAME
       - run: heroku config:set BUILD_NUMBER=$CIRCLE_BUILD_NUM -a $HEROKU_APP_NAME
-      - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
-      - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
+#      - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
+#      - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
       - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
       - run: heroku maintenance:off --app $HEROKU_APP_NAME
-      - heroku/deploy-via-git:
-          force: true
+      - heroku/deploy-via-git
+#          force: true
