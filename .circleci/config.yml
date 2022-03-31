@@ -71,6 +71,6 @@ jobs:
       - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
       - run: heroku maintenance:off -a $HEROKU_APP_NAME
       - run: heroku run python manage.py migrate -a $HEROKU_APP_NAME #todo require
-#      - run: heroku python manage.py initapp (migrate and collectstatic, create superuser with orm, populate db...)
+      - run: heroku python manage.py init_app # (migrate and collectstatic, create superuser with orm, populate db...)
       - heroku/deploy-via-git
 #          force: true
