@@ -125,7 +125,7 @@ STATIC_URL = '/static/'
 django_heroku.settings(locals())
 
 sentry_sdk.init(
-    dsn=config('SENTRY_DSN'),
+    dsn=config('SENTRY_DSN', default=""),
     integrations=[DjangoIntegration()],
 
     # Set traces_sample_rate to 1.0 to capture 100%
@@ -137,5 +137,5 @@ sentry_sdk.init(
     # django.contrib.auth) you may enable sending PII data.
     send_default_pii=True,
 
-    release="oc-lettings-site" + str(os.environ.get('BUILD_NUMBER'))
+    # release="oc-lettings-site" + str(os.environ.get('BUILD_NUMBER'))
 )
