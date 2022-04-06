@@ -16,9 +16,9 @@ workflows:
       - build-and-push-docker-image:
           requires:
             - tests
-#      - heroku-deploy:
-#          requires:
-#            - build-and-push-docker-image
+      - heroku-deploy:
+          requires:
+            - build-and-push-docker-image
 
   other_branches:
     jobs:
