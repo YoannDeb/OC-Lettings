@@ -4,8 +4,8 @@ FROM python:3.10-alpine
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV DEBUG 0
-ENV ALLOWED_HOSTS=127.0.0.1,[::1],0.0.0.0,.herokuapp.com
+ENV DEBUG 1
+#ENV ALLOWED_HOSTS=127.0.0.1,[::1],0.0.0.0,.herokuapp.com
 
 # set the working directory in the container
 WORKDIR /app
@@ -26,4 +26,4 @@ EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # run gunicorn
-CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
+CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:${PORT##\\}
