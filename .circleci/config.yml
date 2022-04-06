@@ -70,7 +70,7 @@ jobs:
       - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
       - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
       - run: heroku maintenance:off -a $HEROKU_APP_NAME
-      - run: heroku run python manage.py -x migrate -a $HEROKU_APP_NAME #todo require this line
-      - run: heroku run python manage.py -x collectstatic --noinput -a $HEROKU_APP_NAME
-      - run: heroku run python manage.py -x init_sample_data -a $HEROKU_APP_NAME # (create superuser with orm, populate db...)
+      - run: heroku run python manage.py migrate -a $HEROKU_APP_NAME #todo require this line
+      - run: heroku run python manage.py collectstatic --noinput -a $HEROKU_APP_NAME
+      - run: heroku run python manage.py init_sample_data -a $HEROKU_APP_NAME # (create superuser with orm, populate db...)
       - heroku/deploy-via-git
