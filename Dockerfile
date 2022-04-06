@@ -5,6 +5,8 @@ FROM python:3.10-alpine
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV DEBUG 1
+ENV PORT 8080
+ENV SECRET_KEY (xanfn-ico)rsfcf((5fc*@$inret(k$2rmf(kevi%n@_pf!ca #docker image testing secret key
 #ENV ALLOWED_HOSTS=127.0.0.1,[::1],0.0.0.0,.herokuapp.com
 
 # set the working directory in the container
@@ -26,4 +28,4 @@ EXPOSE 8000
 CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # run gunicorn
-#CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:${PORT##\\}
+CMD gunicorn hello_django.wsgi:application --bind 0.0.0.0:$PORT
