@@ -13,12 +13,12 @@ workflows:
             branches:
               only:
                 - main
-#      - build-and-push-docker-image:
-#          requires:
-#            - tests
-#      - heroku-deploy:
-#          requires:
-#            - build-and-push-docker-image
+      - build-and-push-docker-image:
+          requires:
+            - tests
+      - heroku-deploy:
+          requires:
+            - build-and-push-docker-image
 
   other_branches:
     jobs:
