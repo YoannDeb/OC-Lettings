@@ -75,3 +75,22 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
+
+## CI/CD (Intégration continue et déploiement continu) :
+
+### Principe de fonctionnement :
+
+Le process CI/CD pour cette application permet à chaque commit sur la branche master, de déclencher un pipeline sur CircleCI.
+Chaque étape doit être complétée avec succès pour passer à la suivante.
+
+#### Le pipeline est constitué de ces étapes : 
+* lancement des tests
+* conteneurisation par CircleCI de l'app (construction et téléversement sur dockerhub)
+* mise en production sur heroku (https://oc-lettings-site.herokuapp.com/)
+
+À noter qu'un commit sur une branche autre que master déclenchera un autre pipeline avec une seule étape : les tests.
+
+### Lancer l'image docker:
+
+docker run --pull always -p 8000:8000 --name OC-Lettings yoanndeb/oc-lettings-site:latest
+
