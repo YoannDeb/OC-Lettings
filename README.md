@@ -83,14 +83,49 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 Le process CI/CD pour cette application permet à chaque commit sur la branche master, de déclencher un pipeline sur CircleCI.
 Chaque étape doit être complétée avec succès pour passer à la suivante.
 
-#### Le pipeline est constitué de ces étapes : 
+#### Le pipeline est constitué de ces étapes (après un commit sur la branche master) : 
 * lancement des tests
 * conteneurisation par CircleCI de l'app (construction et téléversement sur dockerhub)
 * mise en production sur heroku (https://oc-lettings-site.herokuapp.com/)
 
-À noter qu'un commit sur une branche autre que master déclenchera un autre pipeline avec une seule étape : les tests.
+À noter qu'un commit sur une branche autre que master déclenchera un autre pipeline avec une seule étape : le lancement des tests.
 
-### Lancer l'image docker:
+### Configuration requise pour que le déploiement fonctionne :
+
+#### Prérequis en local
+
+Un fichier .env à la racine du projet, pour le fonctionnement en local, contenant :
+```
+SECRET_KEY=[Clé secrète django (commande pour générer une nouvelle secrète key : python -c "import secrets; print(secrets.token_urlsafe())")]
+SENTRY_DSN=[adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)]
+DEBUG=True
+```
+
+#### Prérequis du CI/CD
+
+##### CircleCI
+
+Adresse du projet sur CircleCI : https://app.circleci.com/pipelines/github/YoannDeb/OC-Lettings
+
+L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans les paramètres du projet, sous l'onglet "Environment variables" :
+DOCKER_TOKEN : Token généré sur le compte DockerHUB
+DOCKER_USER : nom du user Docker
+HEROKU_API_KEY : Clé API Heroku dans l'onglet API de l'app heroku
+HEROKU_APP_NAME : nom de l'application heroku
+SECRET_KEY : Clé secrète
+SENTRY_DSN : adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)
+
+##### Docker et DockerHub
+
+##### Heroku
+
+
+### Étapes nécessaires pour effectuer le déploiement :
+
+
+
+
+### Lancer l'image Docker à partir de DockerHub:
 
 docker run --pull always -p 8000:8000 --name OC-Lettings yoanndeb/oc-lettings-site:latest
 
