@@ -76,30 +76,33 @@ Utilisation de PowerShell, comme ci-dessus sauf :
 - Pour activer l'environnement virtuel, `.\venv\Scripts\Activate.ps1` 
 - Remplacer `which <my-command>` par `(Get-Command <my-command>).Path`
 
-## CI/CD (Intégration continue et déploiement continu) :
+## CI/CD (Intégration continue et déploiement continu)
 
-### Principe de fonctionnement :
+### Principe de fonctionnement
 
-Le process CI/CD pour cette application permet à chaque commit sur la branche master, de déclencher un pipeline sur CircleCI.
+#### Branche main
+Le process CI/CD pour cette application permet à chaque commit sur la branche main, de déclencher un pipeline sur CircleCI.
 Chaque étape doit être complétée avec succès pour passer à la suivante.
 
-#### Le pipeline est constitué de ces étapes (après un commit sur la branche master) : 
-* lancement des tests avec Pytest et du linting avec Flake8
-* conteneurisation par CircleCI de l'application Docker (construction et téléversement sur dockerhub)
-* mise en production sur heroku ([adresse actuelle du projet](https://oc-lettings-site.herokuapp.com/))
+##### Le pipeline est constitué de ces étapes (après un commit sur la branche main) :
+* Lancement des tests avec Pytest et du linting avec Flake8.
+* Conteneurisation par CircleCI de l'application Docker (construction et téléversement sur dockerhub).
+* Mise en production sur heroku ([adresse actuelle du projet](https://oc-lettings-site.herokuapp.com/)).
 
-À noter qu'un commit sur une branche autre que master déclenchera un autre pipeline avec une seule étape : le lancement des tests.
+#### Autres branches
 
-### Configuration requise pour que le déploiement fonctionne :
+Un commit sur une branche autre que main déclenchera un autre pipeline avec une seule étape : le lancement des tests.
+
+### Configuration requise
 
 #### Prérequis en local
 
 Un fichier .env à la racine du projet, pour le fonctionnement en local, contenant :
 ```
-SECRET_KEY=[Clé secrète django (commande pour générer une nouvelle secrète key : python -c "import secrets; print(secrets.token_urlsafe())")]
+SECRET_KEY=[Clé secrète django référencée dans le settings.py (commande pour générer une nouvelle secrète key : python -c "import secrets; print(secrets.token_urlsafe())")]
 SENTRY_DSN=[adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)]
 DEBUG=True
-ADMIN_PASSWORD=[Mot de passe du super-utilisateur `admin`, généré par la commande init_sample_data]
+ADMIN_PASSWORD=[Mot de passe du super-utilisateur "admin" dans la base de données Heroku, généré lors du lancement de la commande "manage.py init_sample_data"]
 ```
 
 #### Prérequis du CI/CD
@@ -110,54 +113,54 @@ ADMIN_PASSWORD=[Mot de passe du super-utilisateur `admin`, généré par la comm
 * Un compte Heroku
 * Un compte Sentry
 
-#### CircleCI
+### CircleCI
 
 Le projet CircleCI se trouve à cette [adresse](https://app.circleci.com/pipelines/github/YoannDeb/OC-Lettings).
 
 Si nécessité d'utiliser un autre compte, il faut :
-* relier le compte GitHub hébergeant le projet au compte au compte CircleCI
-* dans l'onglet projet cliquer sur 'Set Up Project'
-* Sélectionner : `Fastest: Use the .circleci/config.yml in my repo`
+* Relier le compte GitHub hébergeant le projet au compte CircleCI.
+* Dans l'onglet projet cliquer sur 'Set Up Project'.
+* Sélectionner : `Fastest: Use the .circleci/config.yml in my repo`.
 
-Toute la configuration sera importée du fichier `.circleci/config.yml`
+Le pipeline de déploiement est configuré dans le susnommé fichier `.circleci/config.yml`.
 
 L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans les paramètres du projet, sous l'onglet "Environment variables" :
 
-| Clé             | Description                                                                                                                              |
-|-----------------|------------------------------------------------------------------------------------------------------------------------------------------|
-| DOCKER_TOKEN    | Token généré sur le compte DockerHUB (voir section Docker et DockerHub)                                                                  |
-| DOCKER_USER     | nom du user Docker                                                                                                                       |
-| HEROKU_API_KEY  | Clé API Heroku dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account)                                 |
-| HEROKU_APP_NAME | nom de l'application heroku                                                                                                              |
-| SECRET_KEY      | Clé secrète                                                                                                                              |
-| SENTRY_DSN      | adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)                           |
-| ADMIN_PASSWORD  | Mot de passe du super-utilisateur `admin` dans la base de données Heroku, généré par la commande init_sample_data, voir section `Heroku` |
+| Clé             | Description                                                                                                                                                           |
+|-----------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| DOCKER_TOKEN    | Token généré sur le compte DockerHUB (voir section `Docker et DockerHub`)                                                                                             |
+| DOCKER_USER     | nom du user Docker                                                                                                                                                    |
+| HEROKU_API_KEY  | Clé API Heroku dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account)                                                              |
+| HEROKU_APP_NAME | nom de l'application heroku (exemple `oc-lettings-site`)                                                                                                              |
+| SECRET_KEY      | Clé secrète Django référencée dans le settings.py (commande pour générer une nouvelle secrète key : `python -c "import secrets; print(secrets.token_urlsafe())"`)     |
+| SENTRY_DSN      | adresse du dsn de Sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)                                                        |
+| ADMIN_PASSWORD  | Mot de passe du super-utilisateur `admin` dans la base de données Heroku, généré lors du lancement de la commande `manage.py init_sample_data`, voir section `Heroku` |
 
-#### Docker et DockerHub
+### Docker et DockerHub
 
-##### Principe de fonctionnement
+#### Principe de fonctionnement
 
-La configuration de la conteneurisation se trouve dans le fichier `Dockerfile` à la racine du projet
+La configuration de la conteneurisation se trouve dans le fichier `Dockerfile` à la racine du projet.
 
-##### Générer la clé 
+#### Générer la clé 
 
 * Se connecter ou créer un compte sur [DockerHub](https://hub.docker.com/).
-* Aller dans `Account Settings`, onglet `Security`
-* Cliquer sur `New Access Token`
-* Rentrer une description et sélectionner `Read, Write, Delete`
-* Copier le token qui s'affiche, car il ne sera pas possible de le récupérer plus tard
-* Le renseigner dans le compte Sentry (voir la section CircleCI)
+* Aller dans `Account Settings`, onglet `Security`.
+* Cliquer sur `New Access Token`.
+* Rentrer une description et sélectionner `Read, Write, Delete`.
+* Copier le token qui s'affiche, et le conserver, car il ne sera pas possible de le récupérer plus tard.
+* Le renseigner dans le compte Sentry (voir la section CircleCI).
 
+#### Lancer l'image Docker à partir de DockerHub
 
-##### Lancer l'image Docker à partir de DockerHub
-
-##### Installation locale et configuration de Docker Desktop
+#### Installation locale et configuration de Docker Desktop
 
 Il faut d'abord installer localement et configurer docker pour sa machine :
-* Télécharger l'installeur [ici](https://www.docker.com/get-started/)
-* Consulter les instructions d'installation selon l'OS de la machine [ici](https://docs.docker.com/get-docker/)
+* Télécharger l'exécutable [ici](https://www.docker.com/get-started/) (choisir selon son OS).
+* Consulter les instructions d'installation selon l'OS de la machine [ici](https://docs.docker.com/get-docker/).
 
-##### Lancement de l'image la plus récente stockée sur DockerHub
+#### Lancement de l'image la plus récente stockée sur DockerHub
+
 On peut ensuite lancer dans un terminal la dernière image stockée sur DockerHub (tag latest) avec cette unique commande :
 
 `docker run --pull always -p 8000:8000 --name OC-Lettings yoanndeb/oc-lettings-site:latest`
@@ -167,62 +170,62 @@ Ici `OC-Lettings` est le nom du conteneur local, `yoanndeb` est le nom du compte
 À noter qu'on ne peut pas utiliser le nom d'un conteneur qui existe déjà, pour lancer une deuxième fois la commande, il faut soit changer le nom du conteneur, soit supprimer l'ancien (voir section `Suppression du conteneur et de l'image docker stockés localement`).
 
 
-##### Construction de l'image Docker et lancement en local (sans passer par CircleCI ni DockerHub)
+#### Construction de l'image Docker et lancement en local (sans passer par CircleCI ni DockerHub)
 
-Dans certains cas, il peut être préférable de construire et de lancer l'image localement (par exemple pour gagner du temps ou pour tester sans déployer)
+Dans certains cas, il peut être préférable de construire et de lancer l'image localement (par exemple pour gagner du temps ou pour tester sans déployer).
 
 Dans un terminal à la racine du projet, on peut utiliser les commandes suivantes :
 * Construction et conteneurisation de l'image Docker : `docker build -t Test/oc-lettings-site:test .`
 * Lancement de l'image docker : `docker run -p 8000:8000 oc-lettings-site:test`
-``
 
-##### Suppression du conteneur et de l'image docker stockés localement
+
+#### Suppression du conteneur et de l'image docker stockés localement
 
 Pour supprimer le conteneur et l'image docker qui sont stockées sur la machine, on peut utiliser l'interface graphique, mais il est également possible de le faire en ligne de commande.
 
-Pour le compte et le nom de conteneur utilisé dans le premier exemple :
+Pour le compte, le nom de conteneur et le nom de l'app utilisés dans le premier exemple :
 * Suppression du conteneur : `docker rm OC-Lettings`
 * Suppression de l'image : `docker rmi yoanndeb/oc-lettings-site:latest`
 
-##### Consultation du site
+#### Consultation du site en local depuis un conteneur Docker
 
-Le site lancé localement sera disponible à l'adresse http://127.0.0.1:8000 avec cette configuration de ports.
+Le site lancé localement sera disponible à l'adresse http://127.0.0.1:8000 avec la configuration de ports de l'exemple.
 
-#### Heroku
+### Heroku
 
-##### Utilisation de l'application heroku actuelle et principe de fonctionnement
+#### Utilisation de l'application heroku actuelle et principe de fonctionnement
 
-L'application actuelle est déployée sur https://oc-lettings-site.herokuapp.com/
+L'application actuelle est déployée sur https://oc-lettings-site.herokuapp.com/.
 
-La base de données utilisée est en Postgresql, et est actuellement peuplée avec des données de base identiques à la base sqlite d'origine, à l'aide d'une commande django personnalisée, exécutée dans le CLI heroku par sentry.
+La base de données utilisée est, suite aux recommandations dans la doc Heroku, en Postgresql, est actuellement peuplée avec des données de base identiques à la base sqlite d'origine, à l'aide d'une commande django personnalisée exécutée dans le CLI heroku par le pipeline CircleCI.
 
-On peut trouver et modifier la commande `python manage.py init_sample_data` peut être modifiée dans le fichier `homepage/management/commands/init_sample_data.py`.
+La commande `python manage.py init_sample_data` peut être modifiée dans le fichier `homepage/management/commands/init_sample_data.py`.
 
 On peut annuler l'exécution de cette commande dans le fichier de configuration CircleCI `.circleci/config.yml` en commentant la ligne 75. Cependant, il est préférable de garder à minima la création d'un utilisateur admin sous peine de ne pas pouvoir faire grand-chose avec notre application...
 
-À noter que le mot de passe du super utilisateur admin créé par cette commande est stocké en tant que variable d'environnement dans le compte CircleCI, voir section `CircleCI`
+À noter que le mot de passe du super utilisateur admin créé par cette commande est stocké en tant que variable d'environnement dans le compte CircleCI, voir section `CircleCI`.
 
-##### Création d'une nouvelle Application Heroku
+#### Création d'une nouvelle Application Heroku
 
-* Se connecter à ou créer un compte Heroku
-* Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps) en cliquant sur le bouton `New` puis `Create new app`
-* récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account))
-* renseigner dans CircleCI les nouvelles variables d'environnement `HEROKU_API_KEY` et `HEROKU_APP_NAME` (voir section CircleCI)
+* Se connecter à ou créer un compte Heroku.
+* Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps) en cliquant sur le bouton `New` puis `Create new app`.
+* Récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account)).
+* Renseigner dans CircleCI les nouvelles variables d'environnement `HEROKU_API_KEY` et `HEROKU_APP_NAME` (voir section `CircleCI`).
 
-Le site sera ensuite accessible à l'adresse https://[nom de l'app Heroku].herokuapp.com
+Le site sera ensuite accessible à l'adresse *https://[nom de l'app Heroku].herokuapp.com*.
 
-#### Sentry
+### Sentry
 
 Sentry permet de faire le monitoring de notre application.
-Le monitoring est actuellement consultable sur 
+Le monitoring est actuellement consultable [ici](https://sentry.io/organizations/ocr-yoann/projects/oc-lettings-site)
 
-##### Création du projet de monitoring  
+#### Création du projet de monitoring  
 
-* Se connecter à ou créer un compte Sentry
-* Créer un nouveau projet à l'aide du bouton `Create Project`
-* Choisir le type de projet `Django`, donner un nom au projet et cliquer sur `Create Project`
+* Se connecter à ou créer un compte Sentry.
+* Créer un nouveau projet à l'aide du bouton `Create Project`.
+* Choisir le type de projet `Django`, donner un nom au projet et cliquer sur `Create Project`.
 * Noter le DSN dans les paramètres du projet dans l'onglet `Client Keys` pour la configuration des environnements Django et CircleCI (voir sections associées).
 
-Les erreurs seront ensuite consignées sur le tableau de bord du projet, on peut configurer des alertes, résoudre les erreurs etc.
+Les erreurs seront ensuite consignées sur le tableau de bord du projet, on peut configurer des alertes, résoudre les erreurs, etc.
 
 Voir [la documentation officielle](https://docs.sentry.io/platforms/python/guides/django/) pour plus de précisions.
