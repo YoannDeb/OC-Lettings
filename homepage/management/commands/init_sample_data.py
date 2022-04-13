@@ -1,5 +1,7 @@
 from django.core.management.base import BaseCommand
 from django.contrib.auth.models import User
+from decouple import config
+
 from lettings.models import Address, Letting
 from profiles.models import Profile
 
@@ -30,7 +32,7 @@ def create_user_and_associated_profile(username, email, first_name,
                                        last_name, profile_favorite_city):
     if not User.objects.filter(username=username).exists():
         user = User.objects.create_user(
-            username=username, password="Abc1234!", email=email,
+            username=username, password=config('ADMIN_PASSWORD'), email=email,
             first_name=first_name, last_name=last_name)
         user.save()
     else:
