@@ -122,14 +122,15 @@ Toute la configuration sera importée du fichier `.circleci/config.yml`
 
 L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans les paramètres du projet, sous l'onglet "Environment variables" :
 
-| Clé             | Description                                                                                                    |
-|-----------------|----------------------------------------------------------------------------------------------------------------|
-| DOCKER_TOKEN    | Token généré sur le compte DockerHUB (voir section Docker et DockerHub)                                        |
-| DOCKER_USER     | nom du user Docker                                                                                             |
-| HEROKU_API_KEY  | Clé API Heroku dans l'onglet API de l'app heroku                                                               |
-| HEROKU_APP_NAME | nom de l'application heroku                                                                                    |
-| SECRET_KEY      | Clé secrète                                                                                                    |
-| SENTRY_DSN      | adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN) |
+| Clé             | Description                                                                                                                              |
+|-----------------|------------------------------------------------------------------------------------------------------------------------------------------|
+| DOCKER_TOKEN    | Token généré sur le compte DockerHUB (voir section Docker et DockerHub)                                                                  |
+| DOCKER_USER     | nom du user Docker                                                                                                                       |
+| HEROKU_API_KEY  | Clé API Heroku dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account)                                 |
+| HEROKU_APP_NAME | nom de l'application heroku                                                                                                              |
+| SECRET_KEY      | Clé secrète                                                                                                                              |
+| SENTRY_DSN      | adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)                           |
+| ADMIN_PASSWORD  | Mot de passe du super-utilisateur `admin` dans la base de données Heroku, généré par la commande init_sample_data, voir section `Heroku` |
 
 #### Docker et DockerHub
 
@@ -188,12 +189,37 @@ Le site lancé localement sera disponible à l'adresse http://127.0.0.1:8000 ave
 
 #### Heroku
 
+##### Utilisation de l'application heroku actuelle et principe de fonctionnement
 
+L'application actuelle est déployée sur https://oc-lettings-site.herokuapp.com/
+
+La base de données utilisée est en Postgresql, et est actuellement peuplée avec des données de base identiques à la base sqlite d'origine, à l'aide d'une commande django personnalisée, exécutée dans le CLI heroku par sentry.
+
+On peut trouver et modifier la commande `python manage.py init_sample_data` peut être modifiée dans le fichier `homepage/management/commands/init_sample_data.py`.
+
+On peut annuler l'exécution de cette commande dans le fichier de configuration CircleCI `.circleci/config.yml` en commentant la ligne 75. Cependant, il est préférable de garder à minima la création d'un utilisateur admin sous peine de ne pas pouvoir faire grand-chose avec notre application...
+
+À noter que le mot de passe du super utilisateur admin créé par cette commande est stocké en tant que variable d'environnement dans le compte CircleCI, voir section `CircleCI`
+
+##### Création d'une nouvelle Application Heroku
+
+* Se connecter à ou créer un compte Heroku
+* Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps) en cliquant sur le bouton `New` puis `Create new app`
+* récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account))
+* renseigner les variables d'environnements HEROKU_API_KEY et HEROKU_APP_NAME (voir section CircleCI)
 
 #### Sentry
 
+Sentry permet de faire le monitoring de notre application.
+Le monitoring est actuellement consultable sur 
 
+##### Création du projet de monitoring  
 
+* Se connecter à ou créer un compte Sentry
+* Créer un nouveau projet à l'aide du bouton `Create Project`
+* Choisir le type de projet `Django`, donner un nom au projet et cliquer sur `Create Project`
+* Noter le DSN dans les paramètres du projet dans l'onglet `Client Keys` pour la configuration des environnements Django et CircleCI (voir sections associées).
 
+Les erreurs seront ensuite consignées sur le tableau de bord du projet, on peut configurer des alertes, résoudre les erreurs etc.
 
-
+Voir [la documentation officielle](https://docs.sentry.io/platforms/python/guides/django/) pour plus de précisions.
