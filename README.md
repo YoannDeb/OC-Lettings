@@ -99,6 +99,7 @@ Un fichier .env à la racine du projet, pour le fonctionnement en local, contena
 SECRET_KEY=[Clé secrète django (commande pour générer une nouvelle secrète key : python -c "import secrets; print(secrets.token_urlsafe())")]
 SENTRY_DSN=[adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)]
 DEBUG=True
+ADMIN_PASSWORD=[Mot de passe du super-utilisateur `admin`, généré par la commande init_sample_data]
 ```
 
 #### Prérequis du CI/CD
@@ -206,7 +207,9 @@ On peut annuler l'exécution de cette commande dans le fichier de configuration 
 * Se connecter à ou créer un compte Heroku
 * Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps) en cliquant sur le bouton `New` puis `Create new app`
 * récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account))
-* renseigner dans CircleCI les variables d'environnement `HEROKU_API_KEY` et `HEROKU_APP_NAME` (voir section CircleCI)
+* renseigner dans CircleCI les nouvelles variables d'environnement `HEROKU_API_KEY` et `HEROKU_APP_NAME` (voir section CircleCI)
+
+Le site sera ensuite accessible à l'adresse https://[nom de l'app Heroku].herokuapp.com
 
 #### Sentry
 
