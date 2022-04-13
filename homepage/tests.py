@@ -1,1 +1,1 @@
-# Tests of homepageare located in tests folder as requested
+# Tests of homepage are located in tests folder as requested
