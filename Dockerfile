@@ -7,7 +7,7 @@ ENV PYTHONUNBUFFERED 1
 ENV DEBUG 1
 ENV PORT 8000
 ENV SECRET_KEY (xanfn-ico)rsfcf((5fc*@$inret(k$2rmf(kevi%n@_pf!ca #docker image testing secret key
-#ENV ALLOWED_HOSTS=127.0.0.1,[::1],0.0.0.0,.herokuapp.com
+
 
 # set the working directory in the container
 WORKDIR /app
