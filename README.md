@@ -206,7 +206,7 @@ On peut annuler l'exécution de cette commande dans le fichier de configuration 
 * Se connecter à ou créer un compte Heroku
 * Créer une nouvelle application à partir du [Dashboard](https://dashboard.heroku.com/apps) en cliquant sur le bouton `New` puis `Create new app`
 * récupérer le nom de l'app et la clé API (dans l'onglet API des paramètres du [compte Heroku](https://dashboard.heroku.com/account))
-* renseigner les variables d'environnements HEROKU_API_KEY et HEROKU_APP_NAME (voir section CircleCI)
+* renseigner dans CircleCI les variables d'environnement `HEROKU_API_KEY` et `HEROKU_APP_NAME` (voir section CircleCI)
 
 #### Sentry
 
