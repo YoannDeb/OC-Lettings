@@ -84,9 +84,9 @@ Le process CI/CD pour cette application permet à chaque commit sur la branche m
 Chaque étape doit être complétée avec succès pour passer à la suivante.
 
 #### Le pipeline est constitué de ces étapes (après un commit sur la branche master) : 
-* lancement des tests
-* conteneurisation par CircleCI de l'app (construction et téléversement sur dockerhub)
-* mise en production sur heroku (https://oc-lettings-site.herokuapp.com/)
+* lancement des tests avec Pytest et du linting avec Flake8
+* conteneurisation par CircleCI de l'application Docker (construction et téléversement sur dockerhub)
+* mise en production sur heroku ([adresse actuelle du projet](https://oc-lettings-site.herokuapp.com/))
 
 À noter qu'un commit sur une branche autre que master déclenchera un autre pipeline avec une seule étape : le lancement des tests.
 
@@ -103,29 +103,97 @@ DEBUG=True
 
 #### Prérequis du CI/CD
 
-##### CircleCI
+* Un compte GitHub
+* Un compte CircleCI relié au compte Github
+* Un compte Docker/DockerHub
+* Un compte Heroku
+* Un compte Sentry
 
-Adresse du projet sur CircleCI : https://app.circleci.com/pipelines/github/YoannDeb/OC-Lettings
+#### CircleCI
+
+Le projet CircleCI se trouve à cette [adresse](https://app.circleci.com/pipelines/github/YoannDeb/OC-Lettings).
+
+Si nécessité d'utiliser un autre compte, il faut :
+* relier le compte GitHub hébergeant le projet au compte au compte CircleCI
+* dans l'onglet projet cliquer sur 'Set Up Project'
+* Sélectionner : `Fastest: Use the .circleci/config.yml in my repo`
+
+Toute la configuration sera importée du fichier `.circleci/config.yml`
 
 L'environnement CircleCI doit contenir les clés suivantes, à renseigner dans les paramètres du projet, sous l'onglet "Environment variables" :
-DOCKER_TOKEN : Token généré sur le compte DockerHUB
-DOCKER_USER : nom du user Docker
-HEROKU_API_KEY : Clé API Heroku dans l'onglet API de l'app heroku
-HEROKU_APP_NAME : nom de l'application heroku
-SECRET_KEY : Clé secrète
-SENTRY_DSN : adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN)
 
-##### Docker et DockerHub
+| Clé             | Description                                                                                                    |
+|-----------------|----------------------------------------------------------------------------------------------------------------|
+| DOCKER_TOKEN    | Token généré sur le compte DockerHUB (voir section Docker et DockerHub)                                        |
+| DOCKER_USER     | nom du user Docker                                                                                             |
+| HEROKU_API_KEY  | Clé API Heroku dans l'onglet API de l'app heroku                                                               |
+| HEROKU_APP_NAME | nom de l'application heroku                                                                                    |
+| SECRET_KEY      | Clé secrète                                                                                                    |
+| SENTRY_DSN      | adresse du dsn de sentry, que l'on trouve dans les paramètres du projet sur Sentry.io, onglet ClientKeys (DSN) |
 
-##### Heroku
+#### Docker et DockerHub
+
+##### Principe de fonctionnement
+
+La configuration de la conteneurisation se trouve dans le fichier `Dockerfile` à la racine du projet
+
+##### Générer la clé 
+
+* Se connecter ou créer un compte sur [DockerHub](https://hub.docker.com/).
+* Aller dans `Account Settings`, onglet `Security`
+* Cliquer sur `New Access Token`
+* Rentrer une description et sélectionner `Read, Write, Delete`
+* Copier le token qui s'affiche, car il ne sera pas possible de le récupérer plus tard
+* Le renseigner dans le compte Sentry (voir la section CircleCI)
 
 
-### Étapes nécessaires pour effectuer le déploiement :
+##### Lancer l'image Docker à partir de DockerHub
+
+##### Installation locale et configuration de Docker Desktop
+
+Il faut d'abord installer localement et configurer docker pour sa machine :
+* Télécharger l'installeur [ici](https://www.docker.com/get-started/)
+* Consulter les instructions d'installation selon l'OS de la machine [ici](https://docs.docker.com/get-docker/)
+
+##### Lancement de l'image la plus récente stockée sur DockerHub
+On peut ensuite lancer dans un terminal la dernière image stockée sur DockerHub (tag latest) avec cette unique commande :
+
+`docker run --pull always -p 8000:8000 --name OC-Lettings yoanndeb/oc-lettings-site:latest`
+
+Ici `OC-Lettings` est le nom du conteneur local, `yoanndeb` est le nom du compte docker et `oc-lettings-site` est le nom du dépôt DockerHub. À remplacer si besoin par les paramètres du compte utilisé si différent.
+
+À noter qu'on ne peut pas utiliser le nom d'un conteneur qui existe déjà, pour lancer une deuxième fois la commande, il faut soit changer le nom du conteneur, soit supprimer l'ancien (voir section `Suppression du conteneur et de l'image docker stockés localement`).
+
+
+##### Construction de l'image Docker et lancement en local (sans passer par CircleCI ni DockerHub)
+
+Dans certains cas, il peut être préférable de construire et de lancer l'image localement (par exemple pour gagner du temps ou pour tester sans déployer)
+
+Dans un terminal à la racine du projet, on peut utiliser les commandes suivantes :
+* Construction et conteneurisation de l'image Docker : `docker build -t Test/oc-lettings-site:test .`
+* Lancement de l'image docker : `docker run -p 8000:8000 oc-lettings-site:test`
+``
+
+##### Suppression du conteneur et de l'image docker stockés localement
+
+Pour supprimer le conteneur et l'image docker qui sont stockées sur la machine, on peut utiliser l'interface graphique, mais il est également possible de le faire en ligne de commande.
+
+Pour le compte et le nom de conteneur utilisé dans le premier exemple :
+* Suppression du conteneur : `docker rm OC-Lettings`
+* Suppression de l'image : `docker rmi yoanndeb/oc-lettings-site:latest`
+
+##### Consultation du site
+
+Le site lancé localement sera disponible à l'adresse http://127.0.0.1:8000 avec cette configuration de ports.
+
+#### Heroku
+
+
+
+#### Sentry
 
 
 
 
-### Lancer l'image Docker à partir de DockerHub:
 
-docker run --pull always -p 8000:8000 --name OC-Lettings yoanndeb/oc-lettings-site:latest
 
