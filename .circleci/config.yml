@@ -68,6 +68,7 @@ jobs:
       - run: heroku config:set BUILD_NUMBER=$CIRCLE_BUILD_NUM -a $HEROKU_APP_NAME
       - run: heroku config:set SECRET_KEY=$SECRET_KEY -a $HEROKU_APP_NAME
       - run: heroku config:set SENTRY_DSN=$SENTRY_DSN -a $HEROKU_APP_NAME
+      - run: heroku config:set ADMIN_PASSWORD=$ADMIN_PASSWORD -a $HEROKU_APP_NAME
       - run: heroku stack:set heroku-20 -a $HEROKU_APP_NAME
       - run: heroku maintenance:off -a $HEROKU_APP_NAME
       - heroku/deploy-via-git
