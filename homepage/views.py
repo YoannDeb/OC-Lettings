@@ -9,4 +9,9 @@ from django.shortcuts import render
 # luctus. Nullam elementum urna nisi, pellentesque iaculis enim cursus in.
 # Praesent volutpat porttitor magna, non finibus neque cursus id.
 def index(request):
+    """
+    Homepage view.
+    :param request: the request sent by the client.
+    :return: A render of the index.html homepage.
+    """
     return render(request, 'homepage/index.html')
