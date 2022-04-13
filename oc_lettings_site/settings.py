@@ -122,8 +122,7 @@ USE_TZ = False
 
 STATIC_URL = '/static/'
 
-django_heroku.settings(locals())
-
+# Sentry configuration
 sentry_sdk.init(
     dsn=config('SENTRY_DSN', default=""),
     integrations=[DjangoIntegration()],
@@ -139,3 +138,8 @@ sentry_sdk.init(
 
     # release="oc-lettings-site" + str(os.environ.get('BUILD_NUMBER'))
 )
+
+# Configure Django App for Heroku using django_heroku module.
+# This will automatically configure DATABASE_URL, ALLOWED_HOSTS, WhiteNoise (for static assets),
+# Logging, and Heroku CI for your application.
+django_heroku.settings(locals())
