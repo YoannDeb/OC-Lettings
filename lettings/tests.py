@@ -35,7 +35,7 @@ class LettingsTestCase(TestCase):
 
     def test_lettings_index_should_return_status_200_ok(self):
         """
-        Testing that get request on lettings' index page is returning status code 200,
+        Testing that GET request on lettings' index page is returning status code 200,
         which means ok.
         """
         client = Client()
@@ -44,7 +44,7 @@ class LettingsTestCase(TestCase):
 
     def test_lettings_index_response_should_return_title_in_html(self):
         """
-        Testing that get request on lettings index page returns html with correct
+        Testing that GET request on lettings index page returns html with correct
         title inside.
         """
         client = Client()
@@ -53,7 +53,7 @@ class LettingsTestCase(TestCase):
 
     def test_lettings_letting_should_return_status_200_ok(self):
         """
-        Testing that get request on lettings letting page is returning status code 200,
+        Testing that GET request on lettings letting page is returning status code 200,
         which means ok.
         """
         client = Client()
@@ -62,7 +62,7 @@ class LettingsTestCase(TestCase):
 
     def test_lettings_letting_response_should_return_title_in_html(self):
         """
-        Testing that get request on lettings' letting page returns html with correct
+        Testing that GET request on lettings' letting page returns html with correct
         title inside.
         """
         client = Client()
