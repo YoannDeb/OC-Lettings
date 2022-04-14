@@ -197,7 +197,7 @@ Le site lancé localement sera disponible à l'adresse http://127.0.0.1:8000 ave
 
 L'application actuelle est déployée sur https://oc-lettings-site.herokuapp.com/.
 
-La base de données utilisée est, suite aux recommandations dans la doc Heroku, en Postgresql, est actuellement peuplée avec des données de base identiques à la base sqlite d'origine, à l'aide d'une commande django personnalisée exécutée dans le CLI heroku par le pipeline CircleCI.
+La base de données utilisée est, suite aux recommandations dans la [documentation Heroku](https://devcenter.heroku.com/articles/sqlite3), en Postgresql, est actuellement peuplée avec des données de base identiques à la base sqlite d'origine, à l'aide d'une commande django personnalisée exécutée dans le CLI heroku par le pipeline CircleCI.
 
 La commande `python manage.py init_sample_data` peut être modifiée dans le fichier `homepage/management/commands/init_sample_data.py`.
 
@@ -217,7 +217,7 @@ Le site sera ensuite accessible à l'adresse *https://[nom de l'app Heroku].hero
 ### Sentry
 
 Sentry permet de faire le monitoring de notre application.
-Le monitoring est actuellement consultable [ici](https://sentry.io/organizations/ocr-yoann/projects/oc-lettings-site)
+Le monitoring configuré est actuellement consultable [ici](https://sentry.io/organizations/ocr-yoann/projects/oc-lettings-site)
 
 #### Création du projet de monitoring  
 
