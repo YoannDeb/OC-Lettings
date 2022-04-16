@@ -85,6 +85,7 @@ Le process CI/CD pour cette application permet à chaque commit sur la branche m
 Chaque étape doit être complétée avec succès pour passer à la suivante.
 
 ##### Le pipeline est constitué de ces étapes (après un commit sur la branche main) :
+
 * Lancement des tests avec Pytest et du linting avec Flake8.
 * Conteneurisation par CircleCI de l'application Docker (construction et téléversement sur dockerhub).
 * Mise en production sur heroku ([adresse actuelle du projet](https://oc-lettings-site.herokuapp.com/)).
