@@ -222,7 +222,7 @@ Le site sera ensuite accessible à l'adresse *https://[nom de l'app Heroku].hero
 ### Sentry
 
 Sentry permet de faire le monitoring de notre application.
-Le monitoring configuré est actuellement consultable [ici](https://sentry.io/organizations/ocr-yoann/projects/oc-lettings-site)
+Le monitoring configuré est actuellement consultable [ici](https://sentry.io/organizations/ocr-yoann/projects/oc-lettings-site).
 
 #### Création du projet de monitoring  
 
