@@ -145,7 +145,7 @@ La configuration de la conteneurisation se trouve dans le fichier `Dockerfile` �
 
 Durant le cycle d'intégration continue, une image est créée puis uploadée sur DockerHub.
 
-L'adresse du dépôt DockerHub actuellement utilisé pour le projet est : https://hub.docker.com/repository/docker/yoanndeb/oc-lettings-site
+L'adresse du dépôt DockerHub actuellement utilisé pour le projet est : https://hub.docker.com/repository/docker/yoanndeb/oc-lettings-site .
 
 #### Générer la clé 
 
